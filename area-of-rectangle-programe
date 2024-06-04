@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Create a variable for the constant
+constant=2.54
+
+#variable created to ensure valid entry
+valid_input=false
+
+#while loop to ensure on 1 or 2 is entered
+while [ "$valid_input" = false ]; do
+    read -p "Please enter a unit of your choice to begin calculating an area of a rectangle [1 = cm, 2 = inch]: " enter_unit
+    
+    if [ "$enter_unit" = "1" ] || [ "$enter_unit" = "2" ]; then
+        valid_input=true
+    else
+        echo "Invalid input! Please enter either 1 or 2."
+    fi
+done
+
+# Prompts user to enter value for both length and width
+read -p "Enter a length of a rectangle: " length
+read -p "Enter a width of a rectangle : " width
+area=$(($length * $width))
+
+# Enables user to convert the value or remain the same
+read -p "What unit do you want your rectangle area to display in [1 = cm, 2 = inch]: " final_unit
+
+# Displays the area in inches if they select 2 
+if [ "$final_unit" == 2 ] && [ "$enter_unit" == 2 ]; then
+    echo "The final area of the rectangle is $area inch"
+
+# Displays the area in cm if they select 1
+elif [ "$final_unit" == 1 ] && [ "$enter_unit" == 1 ]; then
+    echo "The final area of the rectangle is $area cm"
+
+# Displays the final area converted from inches to cm
+elif [ "$final_unit" == 1 ] && [ "$enter_unit" == 2 ]; then
+    INCHTOCM=$(echo "scale=3; $area * $constant" | bc)
+    echo "The final area of the rectangle is $INCHTOCM cm"
+
+# Displays the final area converted from cm to inches
+elif [ "$final_unit" == 2 ] && [ "$enter_unit" == 1 ]; then
+    CMTOINCH=$(echo "scale=3; $area / $constant" | bc)
+    echo "The final area of the rectanggle is $CMTOINCH inch"
+fi
+#end of programme
+read -p "Press 'Enter' to exit" end
+
+
+
