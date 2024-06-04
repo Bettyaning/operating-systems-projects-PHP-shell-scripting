@@ -1,0 +1,226 @@
+#!/bin/bash
+
+#The deck of cards key
+#C = Clubs
+#D = Diamonds
+#H = Hearts 
+#S = Spades
+
+FreshDeck=('CAce' 'C2' 'C3' 'C4' 'C5' 'C6' 'C7' 'C8' 'C9' 'C10' 'CJack' 'CQueen' 'CKing' 
+'DAce' 'D2' 'D3' 'D4' 'D5' 'D6' 'D7' 'D8' 'D9' 'D10' 'DJack' 'DQueen' 'DKing' 
+'HAce' 'H2' 'H3' 'H4' 'H5' 'H6' 'H7' 'H8' 'H9' 'H10' 'HJack' 'HQueen' 'HKing' 
+'SAce' 'S2' 'S3' 'S4' 'S5' 'S6' 'S7' 'S8' 'S9' 'S10' 'SJack' 'SQueen' 'SKing');
+ 
+playercount=0
+playervalue=0
+playDeck=(${FreshDeck[@]})
+
+#Function to get rid of any blank cards
+SkipBlankCards () {
+   while [[ $selected == 0 && $randomnum < 52 ]]
+            do
+                
+                randomnum=$(( $randomnum + 1 ))
+                selected=${playDeck[$randomnum]}
+            
+            done
+}
+
+#Function to get the value of King, Queen, Jack or Ace cards 
+SpecialCardValue () {
+if [[ ($long = "King") || ($long = "Queen") || ($long = "Jack") ]]
+        then
+            playervalue=$(echo "$playervalue+10"|bc)
+        
+        elif [[ $long == "Ace" ]]
+        then
+            echo "Ace Selected, Choose 1 or 11"
+            read ace
+            
+                if [[ $ace = '1' ]]
+                then
+                    playervalue=$(echo "$playervalue+1"|bc)
+                else
+                    playervalue=$(echo "$playervalue+11"|bc)
+                fi
+        
+        else
+            short=${selected:1:2}
+            playervalue=$(echo "$playervalue+$short"|bc)
+        fi
+}
+
+#Function to pick a random card for user
+DealCard () {
+    randomnum=$(( ( $RANDOM % 51 ) + 1 ))
+    selected=${playDeck[$randomnum]}
+    
+    
+}
+
+#Dealer (computers) hand 
+dealercount=0
+dealervalue=0
+
+DealersHand () {
+    DealCard
+    if [[ $selected == '0' ]]
+        then
+            #Calling Function SkipBlank
+            SkipBlankCards
+    fi  
+            
+    dealerhand[$dealercount]=$selected
+    playDeck[$randomnum]=0
+
+    dealercount=$(echo "$dealercount+1"|bc)
+
+        
+    long=${selected:1:5}
+        
+
+    #Special Cards value
+    if [[ ($long = "King") || ($long = "Queen") || ($long = "Jack") ]]
+        then
+            dealervalue=$(echo "$dealervalue+10"|bc)
+        #Ace
+        elif [[ $long == "Ace" ]]
+        then
+            #Dealer's Ace value choice
+                if [[ $dealervalue < '6' ]]
+                then
+                    dealervalue=$(echo "$dealervalue+1"|bc)
+                else
+                    dealervalue=$(echo "$dealervalue+11"|bc)
+                fi
+        
+        else
+            short=${selected:1:2}
+            dealervalue=$(echo "$dealervalue+$short"|bc)
+        fi
+}
+
+#Function to display the winner 
+DisplayWinner () {
+#shows if theres no winner 
+    if [[ ($dealervalue > "21") && ($playervalue > "21") ]]
+    then
+        echo "BOTH BUST, NO WINNER"
+#displays that the player(user) won if the dealer cards bust over 21        
+    elif [[ ($dealervalue > "21") && ($playervalue < "22") ]]
+    then
+        echo "DEALER BUST, PLAYER WINS"
+#displays that the dealer won if the player(user) cards bust over 21
+    elif [[ ($dealervalue < "22") && ($playervalue > "21") ]]
+    then
+        echo "PLAYER BUST, DEALER WINS"
+#displays that the game is a draw - both player and dealer get 21
+    elif [[ ($dealervalue == "21") && ($playervalue == "21") || ($playervalue == $dealervalue) ]]
+    then
+        echo "DRAW"
+#displays that the dealer won if the dealers cards at 21 but the user hasn't
+    elif [[ ($dealervalue == "21") && ($playervalue != "21") ]]
+    then
+        echo "DEALER WINS"
+#displays that the player(user) won if the players cards at 21 and the dealer hasn't
+    elif [[ ($dealervalue != "21") && ($playervalue == "21") ]]
+    then
+        echo "PLAYER WINS"
+#displays who won if they got a number that is closer to the number of 21
+    elif [[ ($dealervalue != "21") && ($playervalue != "21") && ($playervalue < "21") && ($playervalue < "21") ]]
+    then
+        if [[ $dealervalue > $playervalue ]]
+        then
+            echo "DEALER WINS"  
+        elif [[ $dealervalue < $playervalue ]]
+        then
+            echo "PLAYER WINS"
+        fi
+    else
+        echo " "
+        
+    fi  
+}
+
+
+#main 
+
+#Run Dealer's Hand
+DealersHand
+DealersHand
+
+if [[ $dealervalue < '10' ]]
+then
+    DealersHand
+    DealersHand
+elif [[ $dealervalue > "10" && $dealervalue < "17" ]]       
+then
+    DealersHand
+fi  
+# guide and keys for the special cards
+echo "#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+"
+echo " H- Hearts; S- Spades; D- Diamonds; C- Clubs "
+echo " 1 to Deal, 2 to end game"
+echo "#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+"
+
+while [ "$deal" != 2 ]
+do
+        
+    echo "Deal? 1-Yes 2-No"
+    read deal
+    if [[ $deal = 1 ]]
+    then
+        
+        #PLAYERS CARDS
+        
+            #Deal Card function
+            DealCard
+        
+        
+
+            
+            if [[ $selected == '0' ]]
+            then
+                #Calling Function SkipBlank
+                SkipBlankCards
+            
+            
+            fi  
+            
+            displayHand[$playercount]=$selected
+            playDeck[$randomnum]=0
+        
+            playercount=$(echo "$playercount+1"|bc)
+
+            echo "Picked: "$selected
+        
+            long=${selected:1:5}
+        
+            
+
+            #Function for the Ace Value
+            SpecialCardValue
+        
+            
+            #displays the players value
+            echo "Value is "$playervalue
+            
+
+    fi  
+    
+# While loop done
+done
+echo "Your Hand "${displayHand[@]}
+echo "Value is "$playervalue
+
+echo " "
+echo "Dealer Hand "${dealerhand[@]}
+echo "Dealer Value "$dealervalue
+
+echo " "
+
+#Function to display Winner called
+DisplayWinner
+
+read -p "Enter to end" end
+
