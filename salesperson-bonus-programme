@@ -1,0 +1,235 @@
+#!/bin/bash
+
+# Function to calculate the month
+function input {
+  # User input month
+  echo "Enter the month (e.g., 1 = January):"
+  read month
+  echo "Month = $month"
+
+  # Perform checks on the entered month
+  if [ "$month" -gt 12 ] || [ "$month" -lt 1 ] || [ -z "$month" ]; then
+    echo "Please enter the correct value for month ($month). Refer to the example (e.g., 1 = January) and try again."
+    exit 1
+  fi
+  # Array to map numeric values to month names
+  months=("January" "February" "March" "April" "May" "June" "July" "August" "September" "October" "November" "December")
+
+  # Get the corresponding month name from the array
+  month_name=${months[$month - 1]}
+
+  printf "\n"
+
+  # Display the month name
+  echo "Month: $month_name"
+
+   # Check if a numeric value has been entered
+    if ! [[ $month =~ ^[0-9]+$ ]]; then
+    echo "Invalid month entered. Please enter a numeric value for the month."
+    exit 1
+  fi
+
+  printf "\n"
+
+  # User input salesperson
+  salesperson=""
+while [ -z "$salesperson" ]; do
+  echo "Enter salesperson's name:"
+  read salesperson
+
+  # Check if the name entered is not an empty string
+  if [ -z "$salesperson" ]; then
+    echo "Please enter a salesperson's name."
+  fi
+
+  # check the salesperson's name is a string and not an integer input
+  if [[ $salesperson =~ [^[:alpha:]] ]]; then
+    echo "Invalid salesperson name entered. Please enter a valid string."
+    salesperson=""
+  fi
+
+  printf "\n"
+done
+
+  
+
+  # Input the sale amount
+  sales=""
+while [ -z "$sales" ]; do
+  echo "Enter the sale amount for this month:"
+  read sales
+
+  # Check if the amount entered is not an empty string
+  if [ -z "$sales" ]; then
+    echo "Please enter an amount."
+    continue
+  fi
+
+  # check the sales amount is an integer value and not a string 
+  if ! [[ $sales =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+    echo "Invalid sales amount entered. Please enter a valid number."
+    sales=""
+  fi
+
+  printf "\n"
+done
+
+  # Input the filename
+  echo "Enter the desired filename:"
+  read FileName
+
+  # Check if the filename entered is not an empty string
+  if [ -z "$FileName" ]; then
+    echo "Please enter a filename and try again."
+    exit 0
+  fi
+
+  printf "\n"
+
+  # Display the inputs
+  echo "Month: $month"
+  echo "Salesperson: $salesperson"
+  echo "Sales amount: $sales"
+  echo "Filename: $FileName"
+}
+
+# Call the input function
+input
+
+
+#calculate the bonus
+function bonus
+{
+
+if [ $sales -lt 200000 ]
+then
+                bonus=0
+                echo "bonus= $bonus"
+elif [ $sales -ge 200000 ] &&  test $sales -lt 300000
+then
+             bonus=10000
+             echo "bonus= $bonus"
+else
+if [ $sales -ge 300000 ] && test $sales -lt 400000
+ then
+ bonus=15000
+echo "bonus= $bonus"
+ else
+                        if [ $sales -ge 400000 ] && test $sales -lt 500000
+                        then
+                        bonus=20000
+                        echo "bonus= $bonus"
+                        else
+ if [ $sales -ge 500000 ] && test $sales -lt 650000
+ then
+ bonus=25000
+echo "bonus= $bonus"
+ else
+  if [ $sales -ge 650000 ] 
+ then
+  bonus=30000
+ echo "bonus= $bonus"
+ fi
+                        fi
+                fi                      
+fi
+fi
+}
+bonus
+
+# function to calculate the salary
+bonus=-1000
+function taxCal
+{
+ # Set basic salary and tax rate 
+ basic_salary=2000  
+ basic_rate_lower=$(expr 12501 / 12) ; basic_rate_upper=$(expr 50000 / 12)
+ High_Rate_lower=$(expr 12501 / 12) ; High_Rate_upper=$(expr 150000 / 12) 
+
+  # Calculate total monthly salary
+ Total_monthly_salary=$((basic_salary + bonus)) 
+
+# Check if total monthly salary falls within the basic rate
+ if [ $Total_monthly_salary -lt $basic_rate_lower ]
+ then
+  Tax=0
+  Salary_after_tax=$((Total_monthly_salary - Tax))
+ else
+
+ # Check if total monthly salary falls within the basic rate upper limit
+     if [ $Total_monthly_salary -le $basic_rate_upper ]
+     then
+      Tax=$(expr $basic_rate_upper / 20)
+      
+      Salary_after_tax=$((Total_monthly_salary - Tax))
+      echo "Total salary after Tax = $Salary_after_tax"
+      else
+
+       # Check if total monthly salary falls within the high rate
+      test $Total_monthly_salary -gt $High_Rate_lower
+      Tax=$(expr $basic_rate_high / 40)
+      
+      Salary_after_tax=$((Total_monthly_salary - Tax))
+      echo "Total salary after Tax = $Salary_after_tax"
+      
+      fi
+fi
+    
+}
+taxCal
+
+#check the correct input model 
+
+#!/bin/bash
+
+function model {
+        printf "\n"
+        printf "\n"
+
+#Display model key and model classes 
+echo "Enter the model of the car"
+printf "Model key: "
+printf "\n"
+printf "#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+"
+    printf "\nA class - £24,095 - £38,095 (average £31,095)\nB Class - £28,045 - £38,280 (average £33,162)\nC Class - £34,670 - £50,405 (average £42,537)\nE Class - £39,680 - £69,015 (average £54,437)\nAMG C65 - £78,103 - £81,217 (average £79,660)"
+printf "\n#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+"
+printf "\n"
+
+#prompt user to enter model key number associated with model class
+    printf "\nIf the sale falls under A class, enter 1\nIf the sale falls under B class, enter 2\nIf the sale falls under C class, enter 3\nIf the sale falls under E class, enter 4\nIf the sale is AMG C65, enter 5\nModel: "
+    read model
+
+#check if key number associated to model class is valid
+    if [ "$model" -lt 1 ] || [ "$model" -gt 5 ]; then
+        echo "Please enter a number between 1 and 5 and try again"
+        checkModel=1
+    else
+        checkModel=0
+        case $model in
+            1) enteredModel="A class" ;;
+            2) enteredModel="B class" ;;
+            3) enteredModel="C class" ;;
+            4) enteredModel="E class" ;;
+            5) enteredModel="AMG_C65 class" ;;
+        esac
+        echo "You entered Model = $enteredModel"
+    fi
+
+#error message, prompt user to try again
+    while [ "$checkModel" -eq 1 ]; do
+        echo "You have entered the wrong value, please try again"
+        break
+    done
+}
+
+# Call the model function
+model
+
+
+
+# Function to write the results to a file 
+echo "The sales for month $months in 2023 is £$sales, and $salesperson has been paid £$Salary_after_tax in salary after tax" >> $FileName.txt
+
+read -p "Enter to end" end
+
+ 
